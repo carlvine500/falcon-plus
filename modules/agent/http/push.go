@@ -35,6 +35,11 @@ func configPushRoutes() {
 			http.Error(w, "connot decode body", http.StatusBadRequest)
 			return
 		}
+		for _,v := range metrics{
+			if v.Endpoint == ""{
+				v.Endpoint = g.Config().Hostname
+			}
+		}
 
 		g.SendToTransfer(metrics)
 		w.Write([]byte("success"))
