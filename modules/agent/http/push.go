@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"github.com/open-falcon/falcon-plus/common/model"
 	"github.com/open-falcon/falcon-plus/modules/agent/g"
+	"log"
 	"net/http"
 )
 
@@ -35,11 +36,14 @@ func configPushRoutes() {
 			http.Error(w, "connot decode body", http.StatusBadRequest)
 			return
 		}
+
+		hostname, _ := g.Hostname()
 		for _,v := range metrics{
 			if v.Endpoint == ""{
-				v.Endpoint = g.Config().Hostname
+				v.Endpoint = hostname
 			}
 		}
+		log.Printf("tingfeng=> <Total=%d> %v\n", len(metrics), metrics[0])
 
 		g.SendToTransfer(metrics)
 		w.Write([]byte("success"))
